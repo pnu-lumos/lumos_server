@@ -9,7 +9,7 @@
 <pre><code>
   uvicorn app.main:app --reload
 </code></pre>
-3. 클라이언트 크롬 익스텐션 활성화 후 네이버 쇼핑 화면으로 가기
+3. 클라이언트 크롬 익스텐션 활성화 후 네이버 쇼핑 화면으로 가기(새로고침 후 실행 권장)
 4. F12 -> console 누르고 success 또는 fail 등 처리 끝나면 다음과 같은 명령어 console에 입력하고 분석 확인 가능
 <pre><code>
   allow pasting
