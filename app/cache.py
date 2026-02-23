@@ -37,7 +37,7 @@ class TTLAltCache:
 class CacheManager:
     def __init__(self):
         host = os.getenv('REDIS_HOST', 'localhost')
-        port = int(os.getenv('REDIS_PORT', 6379))
+        port = int(os.getenv('REDIS_PORT', 0000))
         self._redis = redis.Redis(host = host, port = port, decode_responses = True)
     
     async def get(self, key: str):
