@@ -2,7 +2,6 @@ import time
 from collections import OrderedDict
 from dataclasses import dataclass
 import os
-import redis.asyncio as redis
 from .config import Settings
 
 @dataclass
