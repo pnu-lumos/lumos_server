@@ -1,1 +1,6 @@
-fastapiuvicornhttpxpython-dotenvopenaipillow
+fastapi
+uvicorn
+httpx
+python-dotenv
+openai
+pillow

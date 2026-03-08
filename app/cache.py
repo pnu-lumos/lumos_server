@@ -2,13 +2,13 @@ import time
 from collections import OrderedDict
 from dataclasses import dataclass
 import os
-import redis.asyncio as redis
 from .config import Settings
 
 @dataclass
 class _CacheEntry:
     value: str
     expires_at: float
+
 '''
 class TTLAltCache:
     def __init__(self, ttl_sec: int, max_entries: int):
@@ -43,6 +43,11 @@ class RedisCacheManager:
             decode_responses = True
         )
         self.ttl = settings.cache_ttl_sec
+class CacheManager:
+    def __init__(self):
+        host = os.getenv('REDIS_HOST', 'localhost')
+        port = int(os.getenv('REDIS_PORT', 0000))
+        self._redis = redis.Redis(host = host, port = port, decode_responses = True)
     
     async def get(self, key: str) -> str | None:
         try:
@@ -50,7 +55,7 @@ class RedisCacheManager:
         except Exception as e:
             print(f"Redis 조회 에러: {e}")
             return None
-    
+
     async def set(self, key: str, value: str):
         try:
             await self._redis.setex(key, self.ttl, value)
@@ -59,3 +64,8 @@ class RedisCacheManager:
     
     async def close(self):
         await self._redis.aclose()
+'''
+    async def set(self, key: str, value: str, expire: int = 86400):
+        await self._redis.set(key, value, ex = expire)
+'''
+
