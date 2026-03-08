@@ -9,7 +9,7 @@ from .config import Settings
 class _CacheEntry:
     value: str
     expires_at: float
-
+'''
 class TTLAltCache:
     def __init__(self, ttl_sec: int, max_entries: int):
         self.ttl_sec = ttl_sec
@@ -34,15 +34,28 @@ class TTLAltCache:
             "timestamp": time.time()
         }
 '''
-class CacheManager:
-    def __init__(self):
-        host = os.getenv('REDIS_HOST', 'localhost')
-        port = int(os.getenv('REDIS_PORT', 6379))
-        self._redis = redis.Redis(host = host, port = port, decode_responses = True)
+
+class RedisCacheManager:
+    def __init__(self, settings: Settings):
+        self._redis = redis.Redis(
+            host = settings.redis_host,
+            port = settings.redis_port,
+            decode_responses = True
+        )
+        self.ttl = settings.cache_ttl_sec
     
-    async def get(self, key: str):
-        return await self._redis.get(key)
+    async def get(self, key: str) -> str | None:
+        try:
+            return await self._redis.get(key)
+        except Exception as e:
+            print(f"Redis 조회 에러: {e}")
+            return None
     
-    async def set(self, key: str, value: str, expire: int = 86400):
-        await self._redis.set(key, value, ex = expire)
-        '''
+    async def set(self, key: str, value: str):
+        try:
+            await self._redis.setex(key, self.ttl, value)
+        except Exception as e:
+            print(f"Redis 저장 에러: {e}")
+    
+    async def close(self):
+        await self._redis.aclose()

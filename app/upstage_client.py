@@ -93,7 +93,7 @@ class UpstageClient:
             "output_formats": json.dumps(["markdown", "text"]),
         }
         try:
-            response = await self._http.post(url, data = data, files = files, timeout = 15.0)
+            response = await self._http.post(url, data = data, files = files, timeout = 30.0)
             if response.status_code >= 400:
                 raise UpstageClientError(
                     f"Document Parse failed status {response.status_code}: {response.text}",

@@ -15,6 +15,9 @@ class Settings:
     cache_ttl_sec: int
     cache_max_entries: int
 
+    redis_host: str
+    redis_port: int
+
     @classmethod
     def from_env(cls) -> "Settings":
         api_key = os.getenv("UPSTAGE_API_KEY", "").strip()
@@ -27,6 +30,8 @@ class Settings:
             upstage_chat_path = os.getenv("UPSTAGE_CHAT_PATH", "/chat/completions"),
             upstage_model = os.getenv("UPSTAGE_MODEL", "solar-pro"),
             request_timeout_sec = float(os.getenv("REQUEST_TIMEOUT_SEC", "30.0")),
-            cache_ttl_sec = int(os.getenv("CACHE_TTL_SEC", "3600")),
+            cache_ttl_sec = int(os.getenv("CACHE_TTL_SEC", "86400")),
             cache_max_entries = int(os.getenv("CACHE_MAX_ENTRIES", "500")),
+            redis_host = os.getenv("REDIS_HOST", ""),
+            redis_port = int(os.getenv("REDIS_PORT", "")),
         )
