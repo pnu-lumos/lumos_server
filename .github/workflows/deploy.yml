@@ -1,0 +1,27 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main # main 브랜치에 push 될 때 작동
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            # EC2 내부의 백엔드 폴더로 이동
+            cd /home/ubuntu/lumos/backend
+            
+            # 최신 코드 깃허브에서 가져오기
+            git pull origin main
+            
+            # 도커 컨테이너 백그라운드 재빌드 및 실행
+            sudo docker-compose up -d --build
