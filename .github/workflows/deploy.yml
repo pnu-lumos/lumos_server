@@ -24,4 +24,4 @@ jobs:
             git pull origin main
             
             # 도커 컨테이너 백그라운드 재빌드 및 실행
-            sudo docker-compose up -d --build
+            sudo docker compose up -d --build
