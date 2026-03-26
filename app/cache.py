@@ -3,7 +3,7 @@ from collections import OrderedDict
 from dataclasses import dataclass
 import os
 from .config import Settings
-import redis
+import redis.asyncio as redis
 
 @dataclass
 class _CacheEntry:
@@ -44,6 +44,31 @@ class RedisCacheManager:
             decode_responses = True
         )
         self.ttl = settings.cache_ttl_sec
+    # [박수빈] Redis부분에서 get ,set 운영
+    async def get(self, key: str) -> str | None:
+        try:
+            # Redis에서 key에 해당하는 값을 비동기로 가져옴
+            return await self._redis.get(key)
+        except Exception as e:
+            print(f"Redis 조회 에러: {e}")
+            return None
+
+    async def set(self, key: str, value: str):
+        try:
+            # Redis에 key-value 쌍을 TTL과 함께 비동기로 저장
+            await self._redis.setex(key, self.ttl, value)
+        except Exception as e:
+            print(f"Redis 저장 에러: {e}")
+    
+    async def close(self):
+        try:
+            # Redis 연결 종료
+            await self._redis.aclose()
+        except Exception as e:
+            print(f"Redis 연결 종료 에러: {e}")
+
+
+'''
 class CacheManager:
     def __init__(self):
         host = os.getenv('REDIS_HOST', 'localhost')
@@ -65,7 +90,7 @@ class CacheManager:
     
     async def close(self):
         await self._redis.aclose()
-'''
+
     async def set(self, key: str, value: str, expire: int = 86400):
         await self._redis.set(key, value, ex = expire)
 '''
