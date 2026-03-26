@@ -3,7 +3,7 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - [cite_start]main # main 브랜치에 push 될 때 작동 
+      - main # main 브랜치에 push 될 때 작동 
 
 jobs:
   deploy:
