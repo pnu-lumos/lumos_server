@@ -67,7 +67,7 @@ class RedisCacheManager:
         except Exception as e:
             print(f"Redis 연결 종료 에러: {e}")
 
-
+# 사용안하도록 주석처리
 '''
 class CacheManager:
     def __init__(self):
