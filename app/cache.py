@@ -3,6 +3,7 @@ from collections import OrderedDict
 from dataclasses import dataclass
 import os
 from .config import Settings
+import cache
 
 @dataclass
 class _CacheEntry:
