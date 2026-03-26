@@ -17,11 +17,12 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # EC2 내부의 백엔드 폴더로 이동
+            # 1. 백엔드 레포지토리 폴더로 쏙 들어가서 최신 코드 당겨오기!
             cd /home/ubuntu/lumos/backend
-            
-            # 최신 코드 깃허브에서 가져오기
             git pull origin main
             
-            # 도커 컨테이너 백그라운드 재빌드 및 실행
-            sudo docker-compose up -d --build
+            # 2. 도커를 실행하려면 docker-compose.yml이 있는 부모 폴더(인프라 폴더)로 한 칸 나와야 함!
+            cd /home/ubuntu/lumos
+            
+            # 3. 도커 빌드 및 실행 (하이픈 없는 최신 명령어)
+            sudo docker compose up -d --build
