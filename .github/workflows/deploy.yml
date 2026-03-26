@@ -3,7 +3,7 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - main # main 브랜치에 push 될 때 작동
+      - [cite_start]main # main 브랜치에 push 될 때 작동 
 
 jobs:
   deploy:
@@ -17,12 +17,23 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # 1. 백엔드 레포지토리 폴더로 쏙 들어가서 최신 코드 당겨오기!
-            cd /home/ubuntu/lumos/backend
-            git pull origin main
-            
-            # 2. 도커를 실행하려면 docker-compose.yml이 있는 부모 폴더(인프라 폴더)로 한 칸 나와야 함!
+            # 1. 프로젝트 루트 폴더로 이동 
             cd /home/ubuntu/lumos
             
-            # 3. 도커 빌드 및 실행 (하이픈 없는 최신 명령어)
-            sudo docker compose up -d --build
+            # 2. 백엔드 코드가 있는 폴더로 가서 최신 코드 당겨오기 
+            # (만약 루트에서 git pull이 가능하다면 cd backend는 생략 가능합니다)
+            cd backend
+            git pull origin main
+            cd ..
+            
+            # 3. 기존 컨테이너를 확실하게 중지 및 삭제 (네트워크와 볼륨은 유지) 
+            # nginx 반영 문제를 해결하기 위해 확실히 내렸다가 올립니다.
+            sudo docker compose down
+            
+            # 4. 도커 빌드 및 실행 [cite: 149]
+            # --build: 수정된 Dockerfile과 backend 코드를 새로 빌드 
+            # --force-recreate: 설정 파일(nginx.conf) 변경 시 컨테이너를 강제로 새로 생성
+            sudo docker compose up -d --build --force-recreate
+            
+            # 5. (선택사항) 불필요한 이미지 정리 (디스크 용량 관리)
+            sudo docker image prune -f
